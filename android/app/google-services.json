@@ -12,7 +12,20 @@
           "package_name": "com.example.sigizi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "733154199984-otp8s1fqfnmsj5dmrp8k9dbdtt6qp02v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sigizi",
+            "certificate_hash": "536b4774b1dcf643a1c350e9078b87cd4535b6a6"
+          }
+        },
+        {
+          "client_id": "733154199984-lhq2vchcm0lnjf6n88le05tbefi4no2h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBuzec3Q3ct16JwBXndC1bNy3azz-YIyVE"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733154199984-lhq2vchcm0lnjf6n88le05tbefi4no2h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "733154199984-kl8glrnej8llmk6sqde3ttjilsfnvlsj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sigizi"
+              }
+            }
+          ]
         }
       }
     }
