@@ -17,20 +17,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> loginEmail() async {
     setState(() => loading = true);
+
     try {
       final user = await AuthService.loginWithEmail(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
+
       if (user != null && mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const BottomNav()),
         );
       }
+
     } catch (e) {
+      String message = 'Login gagal. Silakan coba lagi.';
+
+      // Deteksi error Firebase
+      if (e.toString().contains('wrong-password')) {
+        message = 'Password Anda salah';
+      } else if (e.toString().contains('user-not-found')) {
+        message = 'Email tidak terdaftar';
+      } else if (e.toString().contains('invalid-email')) {
+        message = 'Format email tidak valid';
+      } else {
+        message = 'Email atau Password Anda salah';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login gagal: $e')),
+        SnackBar(content: Text(message)),
       );
     } finally {
       if (mounted) setState(() => loading = false);

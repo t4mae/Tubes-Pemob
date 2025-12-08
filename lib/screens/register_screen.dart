@@ -110,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Email wajib diisi';
-                      final ok = RegExp(r'^\S+@\S+\.\S+\$').hasMatch(v);
+                      final ok = RegExp(r'^\S+@\S+\.\S+$').hasMatch(v);
                       return ok ? null : 'Format email tidak valid';
                     },
                   ),
