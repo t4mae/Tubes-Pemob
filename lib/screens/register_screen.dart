@@ -1,5 +1,6 @@
-// lib/screens/register_screen.dart
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,140 +11,199 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameC = TextEditingController();
-  final _emailC = TextEditingController();
-  final _passC = TextEditingController();
-  final _confirmC = TextEditingController();
-  bool _obscure1 = true;
-  bool _obscure2 = true;
 
-  @override
-  void dispose() {
-    _nameC.dispose();
-    _emailC.dispose();
-    _passC.dispose();
-    _confirmC.dispose();
-    super.dispose();
-  }
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
 
-  void _onSubmit() {
-    if (_formKey.currentState?.validate() ?? false) {
-      // TODO: panggil API register bila ada
+  bool obscure1 = true;
+  bool obscure2 = true;
+  bool loading = false;
+
+  Future<void> register() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (passController.text != confirmController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registrasi berhasil. Silakan login.')),
+        const SnackBar(content: Text('Password tidak sama')),
       );
-      Navigator.pop(context); // kembali ke Login
+      return;
+    }
+
+    setState(() => loading = true);
+
+    try {
+      final user = await AuthService.registerWithEmail(
+        emailController.text.trim(),
+        passController.text.trim(),
+      );
+
+      if (user != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal mendaftar: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text('Daftar'),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 60),
+
+            const Text(
+              'Buat Akun Anda',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Isi data di bawah untuk mendaftar',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+
+            const SizedBox(height: 35),
+
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Nama
+                  TextFormField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: 'Nama Lengkap',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (v) =>
+                    v == null || v.isEmpty ? 'Nama wajib diisi' : null,
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Email
+                  TextFormField(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Email wajib diisi';
+                      final ok = RegExp(r'^\S+@\S+\.\S+\$').hasMatch(v);
+                      return ok ? null : 'Format email tidak valid';
+                    },
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Password
+                  TextFormField(
+                    controller: passController,
+                    obscureText: obscure1,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscure1 ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () => setState(() => obscure1 = !obscure1),
+                      ),
+                    ),
+                    validator: (v) =>
+                    v != null && v.length >= 6 ? null : 'Minimal 6 karakter',
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Konfirmasi Password
+                  TextFormField(
+                    controller: confirmController,
+                    obscureText: obscure2,
+                    decoration: InputDecoration(
+                      labelText: 'Konfirmasi Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscure2 ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () => setState(() => obscure2 = !obscure2),
+                      ),
+                    ),
+                    validator: (v) =>
+                    v == passController.text ? null : 'Password tidak sama',
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Tombol Daftar
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: loading ? null : register,
+                child: loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                  'Daftar',
+                  style: TextStyle(fontSize: 16,
+                  color : Colors.white),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Ke Login
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Masukkan data diri Anda!',
-                    style: theme.textTheme.bodyMedium),
-                const SizedBox(height: 16),
-
-                Text('Nama Lengkap',
-                    style: theme.textTheme.labelMedium),
-                const SizedBox(height: 6),
-                TextFormField(
-                  controller: _nameC,
-                  decoration: const InputDecoration(
-                    hintText: 'Masukkan nama lengkap',
-                  ),
-                  validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Nama wajib diisi' : null,
-                ),
-                const SizedBox(height: 16),
-
-                Text('Email', style: theme.textTheme.labelMedium),
-                const SizedBox(height: 6),
-                TextFormField(
-                  controller: _emailC,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    hintText: 'Masukkan email',
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Email wajib diisi';
-                    final ok = RegExp(r'^\S+@\S+\.\S+$').hasMatch(v);
-                    return ok ? null : 'Format email tidak valid';
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                Text('Password', style: theme.textTheme.labelMedium),
-                const SizedBox(height: 6),
-                TextFormField(
-                  controller: _passC,
-                  obscureText: _obscure1,
-                  decoration: InputDecoration(
-                    hintText: 'Masukkan password',
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscure1 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _obscure1 = !_obscure1),
-                    ),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.length < 6) {
-                      return 'Minimal 6 karakter';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                Text('Konfirmasi Password', style: theme.textTheme.labelMedium),
-                const SizedBox(height: 6),
-                TextFormField(
-                  controller: _confirmC,
-                  obscureText: _obscure2,
-                  decoration: InputDecoration(
-                    hintText: 'Konfirmasi password',
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscure2 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _obscure2 = !_obscure2),
-                    ),
-                  ),
-                  validator: (v) =>
-                  v != _passC.text ? 'Password tidak sama' : null,
-                ),
-                const SizedBox(height: 24),
-
-                SizedBox(
-                  height: 52,
-                  child: FilledButton(
-                    onPressed: _onSubmit,
-                    child: const Text('Daftar'),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
+                const Text('Sudah punya akun? '),
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Sudah punya akun? Login'),
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  ),
+                  child: const Text(
+                    'Masuk',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

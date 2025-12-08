@@ -1,5 +1,8 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../data/child_data.dart';
+import '../models/child.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,178 +12,317 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _tab = 0;
+  int selectedIndex = 0;
+
+  final Color primaryBlue = const Color(0xFF254EDB);
+  final Color secondaryOrange = const Color(0xFFFFAE00);
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final child = ChildData.currentChild;
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header gradien sederhana
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF5E7BFF), Color(0xFF2F4BFF)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+      backgroundColor: Colors.grey.shade100,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildHeader(child, context),
+            const SizedBox(height: 18),
+            _buildSummaryRow(),
+            const SizedBox(height: 25),
+            _buildChartContainer(),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // HEADER (Sudah diperkecil & dibuat mirip Figma)
+  // ------------------------------------------------------------
+  Widget _buildHeader(Child? child, BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 45, 20, 18),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: const [
+            Color(0xFF3E5CF7),
+            Color(0xFF254EDB),
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Halo King!",
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 32),
+
+          const Text(
+            "Profil Anak",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          _buildProfileCard(child, context)
+        ],
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // PROFILE CARD (diperkecil, dibuat layaknya Figma)
+  // ------------------------------------------------------------
+  Widget _buildProfileCard(Child? child, BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          )
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // BAYI ICON
+          Image.asset(
+            "assets/bayi_home.jpg",
+            height: 70,
+          ),
+          const SizedBox(width: 14),
+
+          // TEXT & BUTTON
+          Expanded(
+            child: child == null
+                ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Geser teks lebih ke kanan → pakai padding kiri sedikit
+                Padding(
+                  padding: const EdgeInsets.only(left: 14),
+                  child: const Text(
+                    "Kamu belum punya profil anak",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Halo King!',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        )),
-                    const SizedBox(height: 12),
-                    Text('Profil Anak', style: theme.textTheme.titleMedium?.copyWith(color: Colors.white)),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+
+                const SizedBox(height: 10),
+
+                // BUTTON DIPERKECIL
+                // BUTTON DIPERBAIKI AGAR PANJANG DAN RATA KIRI
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.55, // ← tombol lebih panjang
+                    height: 30, // ← kecil elegan seperti Figma
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pushNamed(context, "/add_child"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                       ),
-                      child: Row(
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.baby_changing_station, size: 40),
-                          const SizedBox(width: 12),
-                          const Expanded(child: Text('Kamu belum punya profil anak')),
-                          FilledButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.add),
-                            label: const Text('Tambah Anak'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.indigo,
-                              foregroundColor: Colors.white,
+                          Icon(Icons.add, color: Colors.white, size: 16),
+                          SizedBox(width: 6),
+                          Text(
+                            "Tambah Anak",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Tiga kartu ringkas
-              Row(
-                children: [
-                  _MetricCard(
-                    label: 'Berat\n~ kg',
-                    icon: Icons.image, // icon foto timbangan
-                    highlighted: true,
-                    onTap: () {},
-                  ),
-                  const SizedBox(width: 10),
-                  _MetricCard(
-                    label: 'Tinggi\n~ cm',
-                    icon: Icons.straighten,
-                    onTap: () {},
-                  ),
-                  const SizedBox(width: 10),
-                  _MetricCard(
-                    label: 'L. Kepala\n~ cm',
-                    icon: Icons.hearing, // pakai icon pengganti
-                    onTap: () {},
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              // "Grafik WHO" (placeholder)
-              Text('Grafik WHO', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                height: 220,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF4D6),
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE6D2A8)),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: const [BoxShadow(blurRadius: 6, color: Colors.black12)],
-                  ),
-                  child: const Center(
-                    child: Text('Area Grafik (placeholder)'),
                   ),
                 ),
-              ),
-            ],
+
+              ],
+            )
+                : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  child.name,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(child.gender == "L" ? "Laki-laki" : "Perempuan"),
+                Text("Usia: ${_usia(child.birthDate)} hari"),
+              ],
+            ),
           ),
-        ),
-      ),
-
-      // Bottom Navigation
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tab,
-        onDestinationSelected: (i) => setState(() => _tab = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: 'Konsultasi'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Akun'),
         ],
       ),
     );
   }
-}
 
-class _MetricCard extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool highlighted;
-  final VoidCallback onTap;
 
-  const _MetricCard({
-    required this.label,
-    required this.icon,
-    this.highlighted = false,
-    required this.onTap,
-  });
+  int _usia(DateTime birth) {
+    return DateTime.now().difference(birth).inDays;
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    final bg = highlighted ? const Color(0xFFFFF2CF) : const Color(0xFFF5F5F5);
-    final border = highlighted ? const Color(0xFFE8C472) : const Color(0xFFE0E0E0);
-
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: border),
+  // ------------------------------------------------------------
+  // SUMMARY ROW (LATAR PANJANG DI BELAKANG ICON)
+  // ------------------------------------------------------------
+  Widget _buildSummaryRow() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _summaryCard(
+            index: 0,
+            label: "Berat",
+            value: "~ kg",
+            icon: "assets/berat.svg",
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(alignment: Alignment.topLeft, child: Icon(icon, size: 20, color: Colors.black54)),
-              const SizedBox(height: 20),
-              Text(
-                label,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+          _summaryCard(
+            index: 1,
+            label: "Tinggi",
+            value: "~ cm",
+            icon: "assets/tinggi.svg",
+          ),
+          _summaryCard(
+            index: 2,
+            label: "L. Kepala",
+            value: "~ cm",
+            icon: "assets/head.svg",
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // SUMMARY ITEM (FULL Figma Style)
+  // ------------------------------------------------------------
+  Widget _summaryCard({
+    required int index,
+    required String label,
+    required String value,
+    required String icon,
+  }) {
+    final active = selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () => setState(() => selectedIndex = index),
+      child: Container(
+        width: 115,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: active ? secondaryOrange.withOpacity(.2) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: active ? secondaryOrange : Colors.grey.shade300,
+            width: active ? 2 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: Column(
+          children: [
+            // Icon background panjang horizontal
+            Container(
+              height: 40,
+              width: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: active
+                    ? secondaryOrange.withOpacity(.6)
+                    : Colors.grey.shade100,
               ),
-            ],
+              child: Center(
+                child: SvgPicture.asset(icon, height: 24),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------------
+  // CHART CONTAINER
+  // ------------------------------------------------------------
+  Widget _buildChartContainer() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        height: 370,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            )
+          ],
+        ),
+        child: const Center(
+          child: Text(
+            "Grafik WHO akan tampil di sini",
+            style: TextStyle(color: Colors.black54),
           ),
         ),
       ),

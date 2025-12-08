@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "733154199984",
+    "project_id": "sigizi",
+    "storage_bucket": "sigizi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733154199984:android:5baec11f2af308d7a3ee75",
+        "android_client_info": {
+          "package_name": "com.example.sigizi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuzec3Q3ct16JwBXndC1bNy3azz-YIyVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
