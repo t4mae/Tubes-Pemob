@@ -38,9 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------------------------
-  // HEADER (Sudah diperkecil & dibuat mirip Figma)
-  // ------------------------------------------------------------
   Widget _buildHeader(Child? child, BuildContext context) {
     return Container(
       width: double.infinity,
@@ -48,8 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: const [
-            Color(0xFF3E5CF7),
-            Color(0xFF254EDB),
+            Color(0xFF2196F3),
+            Color(0xFF1E87DB),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -63,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Halo King!",
+            "Halo Parents!",
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -88,9 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------------------------
-  // PROFILE CARD (diperkecil, dibuat layaknya Figma)
-  // ------------------------------------------------------------
   Widget _buildProfileCard(Child? child, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
@@ -108,20 +102,17 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // BAYI ICON
           Image.asset(
             "assets/bayi_home.jpg",
             height: 70,
           ),
           const SizedBox(width: 14),
 
-          // TEXT & BUTTON
           Expanded(
             child: child == null
                 ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Geser teks lebih ke kanan → pakai padding kiri sedikit
                 Padding(
                   padding: const EdgeInsets.only(left: 14),
                   child: const Text(
@@ -135,17 +126,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const SizedBox(height: 10),
 
-                // BUTTON DIPERKECIL
-                // BUTTON DIPERBAIKI AGAR PANJANG DAN RATA KIRI
                 Align(
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.55, // ← tombol lebih panjang
-                    height: 30, // ← kecil elegan seperti Figma
+                    width: MediaQuery.of(context).size.width * 0.55,
+                    height: 30,
                     child: ElevatedButton(
                       onPressed: () => Navigator.pushNamed(context, "/add_child"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryBlue,
+                        backgroundColor: Colors.blue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -198,9 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return DateTime.now().difference(birth).inDays;
   }
 
-  // ------------------------------------------------------------
-  // SUMMARY ROW (LATAR PANJANG DI BELAKANG ICON)
-  // ------------------------------------------------------------
   Widget _buildSummaryRow() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -230,9 +216,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------------------------
-  // SUMMARY ITEM (FULL Figma Style)
-  // ------------------------------------------------------------
   Widget _summaryCard({
     required int index,
     required String label,
@@ -300,9 +283,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ------------------------------------------------------------
-  // CHART CONTAINER
-  // ------------------------------------------------------------
   Widget _buildChartContainer() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),

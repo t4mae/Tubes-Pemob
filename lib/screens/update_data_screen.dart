@@ -15,7 +15,7 @@ class _UpdateDataScreenState extends State<UpdateDataScreen> {
   final _heightController = TextEditingController();
   final _headController = TextEditingController();
 
-  final Color primaryBlue = const Color(0xFF254EDB);
+  final Color primaryBlue = const Color(0xFF2196F3);
   final Color secondaryOrange = const Color(0xFFFFAE00);
 
   void _saveData() {
@@ -69,7 +69,7 @@ class _UpdateDataScreenState extends State<UpdateDataScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        backgroundColor: primaryBlue,
+        backgroundColor: Colors.blue,
         elevation: 0,
         title: const Text("Update Perkembangan"),
       ),

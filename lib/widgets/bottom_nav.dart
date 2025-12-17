@@ -20,7 +20,7 @@ class _BottomNavState extends State<BottomNav> {
     const EdukasiScreen(),
     const UpdateDataScreen(),
     const KalenderScreen(),
-    const ProfilScreen(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 import 'login_screen.dart';
 
@@ -34,20 +36,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => loading = true);
 
     try {
-      final user = await AuthService.registerWithEmail(
+      final User? user = await AuthService.registerWithEmail(
         emailController.text.trim(),
         passController.text.trim(),
       );
 
-      if (user != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
+      if (user != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set({
+          'uid': user.uid,
+          'fullName': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'createdAt': Timestamp.now(),
+          'phone': '',
+          'address': '',
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+        }
       }
+    } on FirebaseAuthException catch (e) {
+      String message = 'Gagal mendaftar.';
+      if (e.code == 'email-already-in-use') {
+        message = 'Email ini sudah terdaftar. Silakan gunakan email lain.';
+      } else if (e.code == 'weak-password') {
+        message = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal mendaftar: $e')),
@@ -55,6 +81,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } finally {
       if (mounted) setState(() => loading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passController.dispose();
+    confirmController.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,7 +119,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  // Nama
                   TextFormField(
                     controller: nameController,
                     decoration: InputDecoration(
@@ -98,7 +132,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Email
                   TextFormField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -137,7 +170,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // Konfirmasi Password
                   TextFormField(
                     controller: confirmController,
                     obscureText: obscure2,
@@ -162,13 +194,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             const SizedBox(height: 30),
 
-            // Tombol Daftar
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.blue, // Dulu Colors.blue
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -179,14 +210,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     : const Text(
                   'Daftar',
                   style: TextStyle(fontSize: 16,
-                  color : Colors.white),
+                      color : Colors.white),
                 ),
               ),
             ),
 
             const SizedBox(height: 20),
 
-            // Ke Login
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -209,3 +239,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
