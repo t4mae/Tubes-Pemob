@@ -150,130 +150,180 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        elevation: 0,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        title: const Text("Edit Profile"),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            InkWell(
-              onTap: _pickImage,
-              child: Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey.shade200,
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
-                        : (_photoURL != null && _photoURL!.isNotEmpty
-                        ? NetworkImage(_photoURL!)
-                        : null) as ImageProvider?,
-                    child: (_imageFile == null && (_photoURL == null || _photoURL!.isEmpty))
-                        ? Icon(Icons.person, size: 60, color: Colors.grey.shade400)
-                        : null,
-                  ),
-                  const CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.blue,
-                    child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
-                  )
-                ],
-              ),
-            ),
-            const Divider(height: 32),
-            Form(
-              key: _formKey,
-              child: Column(
+      backgroundColor: Colors.grey.shade50,
+      body: Column(
+        children: [
+          _buildHeader(),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    )
+                  ],
+                ),
+                child: Column(
                   children: [
-                    UserInfoEditField(
-                      text: "Name",
-                      child: TextFormField(
-                        controller: _fullNameController,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Nama tidak boleh kosong';
-                          }
-                          return null;
-                        },
-                        decoration: _inputDecoration(),
+                    InkWell(
+                      onTap: _pickImage,
+                      borderRadius: BorderRadius.circular(60),
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          CircleAvatar(
+                            radius: 55,
+                            backgroundColor: Colors.grey.shade100,
+                            backgroundImage: _imageFile != null
+                                ? FileImage(_imageFile!)
+                                : (_photoURL != null && _photoURL!.isNotEmpty
+                                ? NetworkImage(_photoURL!)
+                                : null) as ImageProvider?,
+                            child: (_imageFile == null && (_photoURL == null || _photoURL!.isEmpty))
+                                ? Icon(Icons.person, size: 55, color: Colors.grey.shade400)
+                                : null,
+                          ),
+                          const CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Color(0xFF254EDB),
+                            child: Icon(Icons.camera_alt_rounded, color: Colors.white, size: 16),
+                          )
+                        ],
                       ),
                     ),
-                    UserInfoEditField(
-                      text: "Email",
-                      child: TextFormField(
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value == null || !value.contains('@')) {
-                            return 'Masukkan email yang valid';
-                          }
-                          return null;
-                        },
-                        decoration: _inputDecoration(),
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 12),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          UserInfoEditField(
+                            text: "Nama",
+                            child: TextFormField(
+                              controller: _fullNameController,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Nama tidak boleh kosong';
+                                }
+                                return null;
+                              },
+                              decoration: _inputDecoration(hint: "Nama Lengkap"),
+                            ),
+                          ),
+                          UserInfoEditField(
+                            text: "Email",
+                            child: TextFormField(
+                              controller: _emailController,
+                              enabled: false, // Usually email shouldn't be edited easily
+                              decoration: _inputDecoration(hint: "Alamat Email"),
+                            ),
+                          ),
+                          UserInfoEditField(
+                            text: "Telepon",
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              decoration: _inputDecoration(hint: "Nomor Telepon"),
+                            ),
+                          ),
+                          UserInfoEditField(
+                            text: "Alamat",
+                            child: TextFormField(
+                              controller: _addressController,
+                              maxLines: 2,
+                              decoration: _inputDecoration(hint: "Alamat Lengkap"),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    UserInfoEditField(
-                      text: "Phone",
-                      child: TextFormField(
-                        controller: _phoneController,
-                        decoration: _inputDecoration(),
-                      ),
+                    const SizedBox(height: 32),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.grey.shade600,
+                              side: BorderSide(color: Colors.grey.shade300),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            child: const Text("Batal"),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF254EDB),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              elevation: 0,
+                            ),
+                            onPressed: _isLoading ? null : _saveChanges,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 20, 
+                                    width: 20, 
+                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                                  )
+                                : const Text("Simpan", style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
                     ),
-                    UserInfoEditField(
-                      text: "Address",
-                      child: TextFormField(
-                        controller: _addressController,
-                        decoration: _inputDecoration(),
-                      ),
-                    ),
-                  ]
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 16.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey.shade200,
-                      foregroundColor: Colors.black54,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text("Cancel"),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                SizedBox(
-                  width: 160,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    onPressed: _isLoading ? null : _saveChanges,
-                    child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text("Save Update"),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32.0),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(10, 45, 20, 30),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF3E5CF7), Color(0xFF254EDB)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const Expanded(
+            child: Text(
+              "Edit Profil Anda",
+              style: TextStyle(
+                fontSize: 22, 
+                fontWeight: FontWeight.bold, 
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

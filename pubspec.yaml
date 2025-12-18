@@ -39,6 +39,9 @@ dependencies:
   cloud_firestore: ^6.1.0
   firebase_auth: ^6.1.2
   google_sign_in: ^6.1.0
+  intl: ^0.20.2
+  http: ^1.6.0
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -64,9 +67,14 @@ flutter:
   assets:
     - assets/logo.jpg
     - assets/bayi_home.jpg
+    - assets/boy.png
+    - assets/girl.png
     - assets/berat.svg
     - assets/tinggi.svg
     - assets/head.svg
+    - assets/who/berat/
+    - assets/who/panjang/
+    - assets/who/kepala/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

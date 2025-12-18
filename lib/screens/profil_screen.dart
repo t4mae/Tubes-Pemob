@@ -54,83 +54,165 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        elevation: 0,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        title: const Text("Profile"),
-      ),
+      backgroundColor: Colors.grey.shade50,
       body: _namaLengkap == null
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 60,
-              backgroundColor: Colors.grey.shade200,
-              backgroundImage: (_photoURL != null && _photoURL!.isNotEmpty)
-                  ? NetworkImage(_photoURL!)
-                  : null,
-              child: (_photoURL == null || _photoURL!.isEmpty)
-                  ? Icon(Icons.person, size: 60, color: Colors.grey.shade400)
-                  : null,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _namaLengkap ?? "Nama Pengguna",
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              _email ?? "email@example.com",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const Divider(height: 16.0 * 2),
-            Info(
-              infoKey: "Nama Lengkap",
-              info: _namaLengkap ?? "...",
-            ),
-            Info(
-              infoKey: "Email",
-              info: _email ?? "...",
-            ),
-            Info(
-              infoKey: "Phone",
-              info: _phone != null && _phone!.isNotEmpty ? _phone! : 'Belum diatur',
-            ),
-            const Info(
-              infoKey: "Password",
-              info: "••••••••",
-            ),
-            const SizedBox(height: 16.0),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 160,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: const StadiumBorder(),
+          : Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 55,
+                          backgroundColor: Colors.grey.shade100,
+                          backgroundImage: (_photoURL != null && _photoURL!.isNotEmpty)
+                              ? NetworkImage(_photoURL!)
+                              : null,
+                          child: (_photoURL == null || _photoURL!.isEmpty)
+                              ? Icon(Icons.person, size: 55, color: Colors.grey.shade400)
+                              : null,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _namaLengkap ?? "Nama Pengguna",
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF1A1A1A)),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _email ?? "email@example.com",
+                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                        ),
+                        const SizedBox(height: 24),
+                        const Divider(),
+                        Info(
+                          infoKey: "Nama Lengkap",
+                          info: _namaLengkap ?? "...",
+                        ),
+                        Info(
+                          infoKey: "Email",
+                          info: _email ?? "...",
+                        ),
+                        Info(
+                          infoKey: "Phone",
+                          info: _phone != null && _phone!.isNotEmpty ? _phone! : 'Belum diatur',
+                        ),
+                        const Info(
+                          infoKey: "Password",
+                          info: "••••••••",
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                  side: const BorderSide(color: Colors.red),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                onPressed: () => _showLogoutDialog(context),
+                                icon: const Icon(Icons.logout_rounded, size: 18),
+                                label: const Text("Logout"),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF254EDB),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  elevation: 0,
+                                ),
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                                  );
+                                  _loadUserData();
+                                },
+                                icon: const Icon(Icons.edit_rounded, size: 18),
+                                label: const Text("Edit Profil"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-                    );
-                    _loadUserData();
-                  },
-                  child: const Text("Edit profile"),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 45, 20, 30),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF3E5CF7), Color(0xFF254EDB)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: const Text(
+        "Profil Saya",
+        style: TextStyle(
+          fontSize: 24, 
+          fontWeight: FontWeight.bold, 
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Logout"),
+        content: const Text("Apakah Anda yakin ingin keluar dari aplikasi?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if (context.mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+              }
+            },
+            child: const Text("Ya, Keluar", style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

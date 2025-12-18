@@ -1,6 +1,6 @@
 # SiGizi - KELOMPOK 3
 
-SiGizi adalah aplikasi pemantauan dan manajemen gizi bayi yang membantu orang tua dalam mencatat asupan nutrisi, berat badan, tinggi badan, serta perkembangan kesehatan bayi setiap hari atau setiap bulan. Aplikasi ini dirancang untuk membantu menjaga keseimbangan gizi, memantau pertumbuhan bayi secara optimal, serta memberikan edukasi tentang kebutuhan nutrisi sesuai usia.
+SiGizi adalah aplikasi pemantauan tumbuh kembang bayi yang dirancang untuk membantu orang tua dalam mencatat dan memantau perkembangan fisik anak secara optimal. Aplikasi ini menggunakan standar WHO sebagai referensi untuk memastikan anak tumbuh dengan sehat.
 
 ## Anggota Kelompok:
 <ul>
@@ -11,43 +11,43 @@ SiGizi adalah aplikasi pemantauan dan manajemen gizi bayi yang membantu orang tu
   <li>Fajar Prawira Pasaribu (231402126)</li>
 </ul>
 
-## Fitur yang Akan Ada di Aplikasi:
-<ol>
-  <li><strong>Tambah Anak</strong></li>
-  Pengguna dapat menambahkan profil anak baru dengan data lengkap seperti nama, tanggal lahir, jenis kelamin, status prematur, berat lahir, dan foto anak.
-  <li><strong>Kelola Pertumbuhan Anak</strong></li>
-  Mencatat dan memperbarui data pertumbuhan anak (berat badan, tinggi badan, dan lingkar kepala) secara berkala.
-  <li><strong>Grafik Pertumbuhan WHO</strong></li>
-  Menampilkan perkembangan anak dalam bentuk grafik berdasarkan standar WHO untuk memantau status gizi.
-  <li><strong>Profil Anak</strong></li>
-  Menampilkan data lengkap anak, kutipan motivasi, serta ringkasan pertumbuhan terkini dalam tampilan yang menarik.
-  <li><strong>Konsultasi Online</strong></li>
-  Fitur untuk berkonsultasi dengan dokter anak secara digital melalui chat yang aman dan terenkripsi.
-  <li><strong>Profil Dokter</strong></li>
-  Menampilkan informasi detail dokter seperti nama, gelar, spesialisasi, pengalaman, dan nomor STR.
-  <li><strong>Riwayat Konsultasi</strong></li>
-  Menyimpan dan menampilkan daftar percakapan atau konsultasi yang pernah dilakukan dengan dokter.
-  <li><strong>Dashboard Dokter</strong></li>
-  Halaman khusus untuk dokter yang menampilkan daftar pasien anak, data pertumbuhan, serta grafik perkembangan.
-  <li><strong>Hubungi Orang Tua</strong></li>
-  Fitur komunikasi langsung antara dokter dan orang tua anak untuk membahas hasil pemantauan atau konsultasi.
-  <li><strong>Navigasi Bawah (Home, Konsultasi, Akun)</strong></li>
-  Menu navigasi utama untuk memudahkan pengguna berpindah antar fitur dalam aplikasi.
-  <li><strong>Notifikasi & Pengingat</strong></li>
-  Mengingatkan orang tua tentang jadwal pencatatan pertumbuhan, pemberian vitamin, atau waktu konsultasi berikutnya.
-</ol>
+## Fitur Utama SiGizi:
 
-## Deskripsi Project:
-Proyek ini bertujuan untuk membuat aplikasi mobile yang membantu orang tua dalam memantau pertumbuhan dan status gizi bayi secara digital. Aplikasi dikembangkan menggunakan framework Flutter (Cross Platform) agar dapat berjalan di Android dan iOS.
-Pengguna dapat menambahkan data pertumbuhan, mencatat asupan harian, melihat grafik perkembangan bayi, serta menerima pengingat gizi secara otomatis melalui antarmuka yang ramah pengguna dan informatif.
+1. **Dashboard Tumbuh Kembang**
+   - Ringkasan data gizi terbaru (Berat, Tinggi, Lingkar Kepala).
+   - Tampilan profil anak yang sesuai gender
 
-## Tools:
-<ul>
-  <li>Framework: Flutter</li>
-  <li>Flutter SDK: 3.35.4</li>
-  <li>Dart SDK: 3.9.2</li>
-  <li>Android SDK: 34</li>
-  <li>JDK: 17</li>
-  <li>IDE: Android Studio</li>
-</ul>
+2. **Grafik Pertumbuhan Standar WHO**
+   - Visualisasi tren pertumbuhan menggunakan standar  WHO.
+   - **Analisis Otomatis**: Menampilkan status pertumbuhan (Normal, Di Atas Normal, Di Bawah Normal) berdasarkan perbandingan data anak dengan median WHO.
+   - Legend grafik yang informatif dan mudah dibaca.
+
+3. **Kalender Pengukuran Interaktif**
+   - Riwayat pengukuran bulanan yang terorganisir dalam grid.
+   - **Tap-to-Edit**: Kemudahan mengubah data pengukuran lama secara langsung melalui kalender.
+
+4. **Edukasi & Berita Kesehatan Terkini**
+   - **Integrasi News API**: Menyajikan berita kesehatan terupdate tentang nutrisi anak, MPASI, dan parenting secara dinamis.
+   - Fitur baca selengkapnya yang terhubung langsung ke browser eksternal.
+
+5. **Manajemen Profil Lengkap**
+   - Tambah dan kelola banyak profil anak.
+   - Edit profil pengguna dengan dukungan unggah foto profil ke **Firebase Storage**.
+
+## Deskripsi Proyek:
+Proyek ini bertujuan untuk membuat aplikasi mobile yang membantu orang tua dalam memantau pertubuhan bayi secara digital.
+Pengguna dapat menambahkan data pertumbuhan, melihat grafik perkembangan bayi, serta mendapat informasi kesehatan anak terbarukan.
+
+## Teknologi & Tools:
+- **Framework**: Flutter (Cross-platform Android & iOS)
+- **Backend**: Firebase (Firestore Database, Firebase Authentication, Firebase Storage)
+- **Data Source**: News API (Real-time Health News)
+- **Library Utama**:
+  - `fl_chart`: Visualisasi data pertumbuhan.
+  - `http`: Fetching data dari News API.
+  - `url_launcher`: Integrasi dengan browser eksternal.
+  - `intl`: Format tanggal dan angka.
+  - `image_picker`: Pengambilan foto profil.
+
+
 
